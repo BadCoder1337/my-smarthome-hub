@@ -1,0 +1,30 @@
+{
+  "name": "my-smarthome-hub",
+  "version": "1.0.0",
+  "main": "build/index.js",
+  "repository": "https://github.com/BadCoder1337/my-smarthome-hub",
+  "author": "BadCoder1337 <anton.tiz.musin@gmail.com>",
+  "license": "AGPL-3.0-or-later",
+  "devDependencies": {
+    "@types/dotenv": "^8.2.0",
+    "@types/node": "^13.1.4",
+    "@types/node-fetch": "^2.5.4",
+    "prettier": "^1.19.1",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.4"
+  },
+  "dependencies": {
+    "async-mqtt": "^2.4.2",
+    "dotenv": "^8.2.0",
+    "ewelink-api": "https://github.com/BadCoder1337/ewelink-api#50715e0",
+    "mqtt": "^3.0.0",
+    "node-fetch": "^2.6.0"
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "dev": "yarn build && yarn start:watch",
+    "start": "node ./build/index.js",
+    "start:dev": "node --inspect ./build/index.js",
+    "start:watch": "tsc-watch --onSuccess \"yarn start:dev\""
+  }
+}

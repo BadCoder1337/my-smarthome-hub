@@ -1,0 +1,25 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "Debug",
+        "program": "${workspaceFolder}/src/index.ts",
+        "preLaunchTask": "npm: build",
+        "sourceMaps": true,
+        // "trace": true,
+        // "stopOnEntry": true,
+        "outFiles": ["${workspaceFolder}/build/**/*.js"],
+        "envFile": "${workspaceFolder}/.env",
+        "skipFiles": [
+          "<node_internals>/**/*.js",
+          "${workspaceFolder}/node_modules/readable-stream/**/*.js",
+          "${workspaceFolder}/node_modules/bluebird/**/*.js",
+        ]
+      }
+    ]
+  }
