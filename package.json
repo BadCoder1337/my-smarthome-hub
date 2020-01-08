@@ -25,6 +25,11 @@
     "dev": "yarn build && yarn start:watch",
     "start": "node ./build/index.js",
     "start:dev": "node --inspect ./build/index.js",
-    "start:watch": "tsc-watch --onSuccess \"yarn start:dev\""
+    "start:watch": "tsc-watch --onSuccess \"yarn start:dev\"",
+    "postinstall": "yarn build"
+  },
+  "engines": {
+    "node": "12.14.x",
+    "yarn": "latest"
   }
 }
