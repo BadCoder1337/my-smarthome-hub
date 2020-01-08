@@ -30,6 +30,6 @@
   },
   "engines": {
     "node": "12.14.x",
-    "yarn": "latest"
+    "yarn": "1.21.x"
   }
 }
