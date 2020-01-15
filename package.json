@@ -26,7 +26,8 @@
     "start": "node ./build/index.js",
     "start:dev": "node --inspect ./build/index.js",
     "start:watch": "tsc-watch --onSuccess \"yarn start:dev\"",
-    "postinstall": "yarn build && sh ./scripts/libs.sh"
+    "postinstall": "yarn build && sh ./scripts/libs.sh",
+    "deploy": "docker build -t my-smarthome-hub . && flynn -a smarthome docker push my-smarthome-hub"
   },
   "engines": {
     "node": "12.14.x",

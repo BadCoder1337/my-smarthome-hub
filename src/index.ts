@@ -34,7 +34,7 @@ async function main() {
     const [cfg, codeMap] = await loadCodes();
     console.log('[1/4] Codes loaded!');
     const arpTable = await getArpTable();
-    console.log('[2/4] ARP table loaded!');
+    console.log('[2/4] ARP table loaded!', JSON.stringify(arpTable), process.env.IP, process.env.MASK);
     const devicesCache = await getDevices();
     console.log('[3/4] Cached devices loaded!');
     const ewe = new eWeLink({arpTable, devicesCache});
