@@ -437,9 +437,9 @@ event-emitter@~0.3.5:
     d "1"
     es5-ext "~0.10.14"
 
-"ewelink-api@https://github.com/BadCoder1337/ewelink-api#50715e0":
+"ewelink-api@https://github.com/BadCoder1337/ewelink-api#73e3ce4":
   version "2.0.0"
-  resolved "https://github.com/BadCoder1337/ewelink-api#50715e031ffddfb832da994b582764a500e6b5f6"
+  resolved "https://github.com/BadCoder1337/ewelink-api#73e3ce476c8c4c49df78b3e8b002835188fe3fba"
   dependencies:
     arpping "github:skydiver/arpping"
     crypto-js "^3.1.9-1"
