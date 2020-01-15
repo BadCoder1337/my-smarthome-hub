@@ -105,3 +105,4 @@ dist
 
 build
 bind.json
+devices-cache.json
