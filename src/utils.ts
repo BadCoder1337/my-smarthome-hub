@@ -26,6 +26,6 @@ export async function getArpTable(): Promise<IHost[]> {
     switch (process.platform) {
         case 'win32': return win32ARP();
         case 'linux':
-        default: return linuxARP();
+        default: return linuxARP(process.env.IP, process.env.MASK);
     }
 }
