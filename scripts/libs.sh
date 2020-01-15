@@ -1,2 +1,2 @@
-sudo apt update
-sudo apt install iputils-ping net-tools
+apt-get update
+apt-get install iputils-ping net-tools -y

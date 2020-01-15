@@ -2,8 +2,14 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import * as MQTTBroker from 'async-mqtt';
 import { eWeLink, Zeroconf } from 'ewelink-api';
+import * as http from 'http';
 import { IRF } from './types';
 import { getArpTable, loadCodes } from './utils';
+
+http.createServer((req, res) => {
+    res.write('Hello World!');
+    res.end();
+}).listen(process.env.PORT);
 
 const mqtt = MQTTBroker.connect(process.env.MQTT_URL, {
     username: process.env.MQTT_USERNAME,
