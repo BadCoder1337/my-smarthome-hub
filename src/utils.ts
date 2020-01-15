@@ -23,6 +23,10 @@ export async function loadCodes(): Promise<[ICfg, Map<string, number>]> {
 }
 
 export async function getArpTable(): Promise<IHost[]> {
+    if (process.env.ARP_TABLE_URL) {
+        const res = await fetch(process.env.ARP_TABLE_URL);
+        return res.json();
+    }
     switch (process.platform) {
         case 'win32': return win32ARP();
         case 'linux':
