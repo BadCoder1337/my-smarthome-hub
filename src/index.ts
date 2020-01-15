@@ -12,16 +12,16 @@ const mqtt = MQTTBroker.connect(process.env.MQTT_URL, {
 
 async function getDevices() {
     try {
-        return Zeroconf.loadCachedDevices();
-    } catch (error) {
-        const ewe = new eWeLink({
-            region: process.env.EWELINK_REGION || 'eu',
-            email: process.env.EWELINK_EMAIL,
-            password: process.env.EWELINK_PASSWORD,
-        });
-        await ewe.saveDevicesCache();
-        return Zeroconf.loadCachedDevices();
-    }
+        const devices = Zeroconf.loadCachedDevices();
+        if (process.env.REFRESH_DEVICES !== 'true') { return devices; }
+    } catch (error) {/* */}
+    const ewe = new eWeLink({
+        region: process.env.EWELINK_REGION || 'eu',
+        email: process.env.EWELINK_EMAIL,
+        password: process.env.EWELINK_PASSWORD,
+    });
+    await ewe.saveDevicesCache();
+    return Zeroconf.loadCachedDevices();
 }
 
 async function main() {
