@@ -3,7 +3,7 @@ import { IHost } from 'ewelink-api';
 import { binToIp, ipToBin } from './utils';
 
 export async function win32ARP(): Promise<IHost[]> {
-    const output = execSync('pwsh ./scripts.ps1').toString();
+    const output = execSync('pwsh ./scripts/arp.ps1').toString();
     const netNeighbor = JSON.parse(output);
     return netNeighbor.map(nn => ({ ip: (nn.IPAddress as string), mac: (nn.LinkLayerAddress as string).toLowerCase().replace(/-/g, ':')}));
 }
