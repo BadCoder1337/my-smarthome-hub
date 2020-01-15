@@ -16,7 +16,7 @@
   "dependencies": {
     "async-mqtt": "^2.4.2",
     "dotenv": "^8.2.0",
-    "ewelink-api": "https://github.com/BadCoder1337/ewelink-api#50715e0",
+    "ewelink-api": "https://github.com/BadCoder1337/ewelink-api#73e3ce4",
     "mqtt": "^3.0.0",
     "node-fetch": "^2.6.0"
   },
