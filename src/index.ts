@@ -28,11 +28,35 @@ const mqtt = MQTTBroker.connect(process.env.MQTT_URL, {
     password: process.env.MQTT_PASSWORD
 });
 
-const ewe = new eWeLink({
-    region: process.env.EWELINK_REGION || 'eu',
-    email: process.env.EWELINK_EMAIL,
-    password: process.env.EWELINK_PASSWORD,
-});
+async function getArpTable(): Promise<IHost[]> {
+    if (process.platform === 'win32') {
+        const output = execSync('pwsh -Command "'
+        + 'Get-NetNeighbor |'
+        + 'ForEach-Object -ThrottleLimit 256 -Parallel { if (Test-Connection $_.IPAddress -Ping -Quiet) { $_ } else { $null } } |'
+        + 'Where-Object { $_ -ne $null } |'
+        + 'ConvertTo-Json |'
+        + 'Out-Host'
+        + '"').toString();
+        const netNeighbor = JSON.parse(output);
+        return netNeighbor.map(nn => ({ ip: (nn.IPAddress as string), mac: (nn.LinkLayerAddress as string).toLowerCase().replace(/-/g, ':')}));
+    } else {
+        return Zeroconf.getArpTable(process.env.MY_IP);
+    }
+}
+
+async function getDevices() {
+    try {
+        return Zeroconf.loadCachedDevices();
+    } catch (error) {
+        const ewe = new eWeLink({
+            region: process.env.EWELINK_REGION || 'eu',
+            email: process.env.EWELINK_EMAIL,
+            password: process.env.EWELINK_PASSWORD,
+        });
+        await ewe.saveDevicesCache();
+        return Zeroconf.loadCachedDevices();
+    }
+}
 
 async function loadCodes(): Promise<[ICfg, Map<string, number>]> {
     const codeMap = new Map<string, number>();
@@ -41,31 +65,21 @@ async function loadCodes(): Promise<[ICfg, Map<string, number>]> {
     cfg.from.map((codeArr: string[], i: number) => {
         codeArr.map(code => codeMap.set(code, i));
     });
-    console.log('Codes loaded!');
     return [cfg, codeMap];
 }
 
 async function main() {
     const [cfg, codeMap] = await loadCodes();
-    await new Promise(res => setTimeout(res, 3000));
-    console.log('Logged');
-    await ewe.saveDevicesCache();
-    let arp: IHost[];
-    if (process.platform === 'win32') {
-        const output = execSync('pwsh -Command "'
-        + 'Get-NetNeighbor'
-        + '|ForEach-Object -ThrottleLimit 256 -Parallel { if (Test-Connection $_.IPAddress -Ping -Quiet) { $_ } else { $null } }'
-        + '|Where-Object { $_ -ne $null }'
-        + '|ConvertTo-Json'
-        + '|Out-Host'
-        + '"').toString();
-        const netNeighbor = JSON.parse(output);
-        arp = netNeighbor.map(nn => ({ ip: nn.IPAddress, mac: nn.LinkLayerAddress}));
-    } else {
-        arp = await Zeroconf.getArpTable(process.env.MY_IP);
-    }
+    console.log('[1/4] Codes loaded!');
+    const arpTable = await getArpTable();
+    console.log('[2/4] ARP table loaded!');
+    const devicesCache = await getDevices();
+    console.log('[3/4] Cached devices loaded!');
+    const ewe = new eWeLink({arpTable, devicesCache});
+    console.log('[4/4] Ready!');
+
     await mqtt.subscribe('tele/tasmota/#');
-    mqtt.on('message', async (topic: string, payload: Buffer, packet: MQTTBroker.Packet) => {
+    mqtt.on('message', async (topic: string, payload: Buffer) => {
         if (topic !== 'tele/tasmota/RESULT') { return; }
         const msg = JSON.parse(payload.toString()) as IRF;
         const i = codeMap.get(msg.RfReceived.Data);
@@ -77,7 +91,6 @@ async function main() {
                 : Promise.all(Object.entries(newState).map(ent => ewe.setDevicePowerState(ent[0], ent[1].toString())))
             )
         ));
-        console.log();
     });
 }
 
