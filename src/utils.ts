@@ -1,4 +1,5 @@
 import { IHost } from 'ewelink-api';
+import fetch from 'node-fetch';
 import { linuxARP, win32ARP } from './arp';
 import { ICfg } from './types';
 
