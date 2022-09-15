@@ -17,6 +17,9 @@ const mqtt = MQTTBroker.connect(process.env.MQTT_URL, {
 });
 
 async function getDevices() {
+    if(process.env.DEVICES_CACHE) {
+        return JSON.parse(process.env.DEVICES_CACHE)
+    }
     try {
         const devices = Zeroconf.loadCachedDevices();
         if (process.env.REFRESH_DEVICES !== 'true') { return devices; }
@@ -38,7 +41,7 @@ async function main() {
     isDevMode && console.log(cfg, codeMap);
 
     const arpTable = await getArpTable();
-    console.log('[2/4] ARP table loaded!', JSON.stringify(arpTable), process.env.IP, process.env.MASK);
+    console.log('[2/4] ARP table loaded!', JSON.stringify(arpTable));
 
     const devicesCache = await getDevices();
     console.log('[3/4] Cached devices loaded!');

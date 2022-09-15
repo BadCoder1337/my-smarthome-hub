@@ -23,6 +23,9 @@ export async function loadCodes(): Promise<[ICfg, Map<string, number>]> {
 }
 
 export async function getArpTable(): Promise<IHost[]> {
+    if (process.env.ARP_TABLE) {
+        return JSON.parse(process.env.ARP_TABLE)
+    }
     if (process.env.ARP_TABLE_URL) {
         const res = await fetch(process.env.ARP_TABLE_URL);
         return res.json();
