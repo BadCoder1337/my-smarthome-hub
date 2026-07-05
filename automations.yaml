@@ -1,0 +1,103 @@
+- id: '1732813981925'
+  alias: Toggle Living Room 1
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.button_1
+    to: 'on'
+  conditions: []
+  actions:
+  - action: switch.toggle
+    data: {}
+    target:
+      entity_id:
+      - switch.sonoff_10009f15c9_1
+  mode: single
+- id: '1732816718079'
+  alias: Toggle Living Room 2
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.button_2
+    to: 'on'
+  conditions: []
+  actions:
+  - action: switch.toggle
+    data: {}
+    target:
+      entity_id:
+      - switch.sonoff_10009f15c9_3
+  mode: single
+- id: '1732816833693'
+  alias: Toggle Arker
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.button_3
+    to: 'on'
+  conditions: []
+  actions:
+  - action: switch.toggle
+    data: {}
+    target:
+      entity_id: switch.sonoff_10009f0ffe_1
+  mode: single
+- id: '1732816888024'
+  alias: Toggle Balcony
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.button_4
+    to: 'on'
+  conditions: []
+  actions:
+  - action: switch.toggle
+    data: {}
+    target:
+      entity_id:
+      - switch.sonoff_10009f15c9_4
+  mode: single
+- id: '1732816945874'
+  alias: Toggle Disco
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.button_5
+    to: 'on'
+  conditions: []
+  actions:
+  - action: switch.toggle
+    data: {}
+    target:
+      entity_id: switch.sonoff_10009f0ffe_2
+  mode: single
+- id: '1732816998349'
+  alias: Toggle Anteroom
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.button_7
+    to: 'on'
+  conditions: []
+  actions:
+  - action: switch.toggle
+    data: {}
+    target:
+      entity_id: switch.sonoff_10009f0ffe_4
+  mode: single
+- id: '1732817303551'
+  alias: Toggle off
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.button_8
+    to: 'on'
+  conditions: []
+  actions:
+  - action: switch.turn_off
+    data: {}
+    target:
+      device_id:
+      - f264dc0596a37c2e3046a8fd99921af3
+      - 3cdfba0d088096196a6d207d9af0aba5
+  mode: single

@@ -1,0 +1,92 @@
+esphome:
+  name: rf-hub
+
+esp32:
+  variant: esp32
+  framework:
+    type: esp-idf
+
+logger:
+
+api:
+  encryption:
+    key: !secret esphome_rf_hub__encryption_key
+
+ota:
+  - platform: esphome
+    password: !secret esphome_rf_hub__ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ap_timeout: 90s
+    password: !secret fallback_ap_password
+
+captive_portal:
+
+external_components:
+  - source: github://BadCoder1337/my-smarthome-hub@main
+    components: [rf_capture]
+
+remote_receiver:
+  id: rx
+  pin:
+    number: GPIO27
+  tolerance: 15%
+  filter: 120us   # сохраняем короткие импульсы пультов (~205 µs)
+  idle: 6ms
+
+# 8 абстрактных кнопок — общие HA-сущности для ВСЕХ пультов (зеркально).
+# Все пульты — стандартный PT2262; компонент декодит их и поднимает кнопку
+# по младшему ниблу. Номер = физическая кнопка на пульте.
+binary_sensor:
+  - platform: template
+    name: "Button 1"
+    id: btn_1
+  - platform: template
+    name: "Button 2"
+    id: btn_2
+  - platform: template
+    name: "Button 3"
+    id: btn_3
+  - platform: template
+    name: "Button 4"
+    id: btn_4
+  - platform: template
+    name: "Button 5"
+    id: btn_5
+  - platform: template
+    name: "Button 6"
+    id: btn_6
+  - platform: template
+    name: "Button 7"
+    id: btn_7
+  - platform: template
+    name: "Button 8"
+    id: btn_8
+
+rf_capture:
+  id: rf
+  receiver_id: rx
+  led_pin: GPIO2
+
+  # Тайминги декодера PT2262 (подстрой под свои пульты при необходимости):
+  bit_threshold: 450us   # граница «длинный/короткий» импульс
+  min_pulse: 150us       # игнорировать импульсы короче
+  max_pulse: 1000us      # игнорировать импульсы длиннее
+  hold_time: 250ms       # сколько кнопка держится "нажатой" после последнего кадра
+
+  # Разрешённые пульты (20-битные ID) — список в secrets.yaml (rf_remotes).
+  remotes: !secret rf_remotes
+
+  # Физическая кнопка пульта = младший нибл кода.
+  buttons:
+    - { nibble: 0x8, sensor: btn_1 }
+    - { nibble: 0xC, sensor: btn_2 }
+    - { nibble: 0x4, sensor: btn_3 }
+    - { nibble: 0x9, sensor: btn_4 }
+    - { nibble: 0x2, sensor: btn_5 }
+    - { nibble: 0x5, sensor: btn_6 }
+    - { nibble: 0x1, sensor: btn_7 }
+    - { nibble: 0x3, sensor: btn_8 }

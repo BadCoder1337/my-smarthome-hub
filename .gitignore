@@ -1,0 +1,6 @@
+# Реальные секреты не коммитим (см. secrets.yaml.example)
+secrets.yaml
+
+# ESPHome build cache
+.esphome/
+__pycache__/
