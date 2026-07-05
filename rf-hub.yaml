@@ -28,6 +28,7 @@ captive_portal:
 external_components:
   - source: github://BadCoder1337/my-smarthome-hub@main
     components: [rf_capture]
+    refresh: 0s   # всегда тянуть свежую версию компонента (иначе ESPHome кэширует)
 
 remote_receiver:
   id: rx
