@@ -20,6 +20,7 @@ CONF_BIT_THRESHOLD = "bit_threshold"
 CONF_MIN_PULSE = "min_pulse"
 CONF_MAX_PULSE = "max_pulse"
 CONF_HOLD_TIME = "hold_time"
+CONF_MIN_REPEATS = "min_repeats"
 
 BUTTON_SCHEMA = cv.Schema(
     {
@@ -40,6 +41,7 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_MIN_PULSE, default="150us"): cv.positive_time_period_microseconds,
         cv.Optional(CONF_MAX_PULSE, default="1000us"): cv.positive_time_period_microseconds,
         cv.Optional(CONF_HOLD_TIME, default="250ms"): cv.positive_time_period_milliseconds,
+        cv.Optional(CONF_MIN_REPEATS, default=1): cv.int_range(min=1, max=10),
         cv.Required(CONF_BUTTONS): cv.ensure_list(BUTTON_SCHEMA),
     }
 ).extend(cv.COMPONENT_SCHEMA)
@@ -57,6 +59,7 @@ async def to_code(config):
     cg.add(var.set_min_pulse(config[CONF_MIN_PULSE]))
     cg.add(var.set_max_pulse(config[CONF_MAX_PULSE]))
     cg.add(var.set_hold_time(config[CONF_HOLD_TIME]))
+    cg.add(var.set_min_repeats(config[CONF_MIN_REPEATS]))
 
     receiver = await cg.get_variable(config[CONF_RECEIVER_ID])
     cg.add(receiver.register_listener(var))

@@ -19,6 +19,7 @@ class RFCapture : public Component, public remote_base::RemoteReceiverListener {
   void set_min_pulse(int32_t v) { this->min_pulse_ = v; }
   void set_max_pulse(int32_t v) { this->max_pulse_ = v; }
   void set_hold_time(uint32_t v) { this->hold_time_ = v; }
+  void set_min_repeats(uint8_t v) { this->min_repeats_ = v; }
   void set_button(uint8_t nibble, binary_sensor::BinarySensor *s) {
     if (nibble < 16)
       this->map_[nibble] = s;
@@ -105,12 +106,19 @@ class RFCapture : public Component, public remote_base::RemoteReceiverListener {
     if (!this->remote_allowed_(code >> 4))
       return false;
 
-    // Анти-шум: 2 одинаковых декода подряд (кадр приходит пачкой).
+    // Подтверждение: min_repeats одинаковых декодов подряд (кадр идёт пачкой).
+    // min_repeats=1 — срабатывать с первого валидного декода: максимум
+    // чувствительности к слабым/дальним пультам (whitelist по ID защищает
+    // от ложных). Поднять до 2, если появятся ложные срабатывания от шума.
     uint32_t now = millis();
     if (code == this->last_code_ && now - this->last_code_ms_ < 700)
-      this->fire_nibble((uint8_t) (code & 0xF));
+      this->repeat_count_++;
+    else
+      this->repeat_count_ = 1;
     this->last_code_ = code;
     this->last_code_ms_ = now;
+    if (this->repeat_count_ >= this->min_repeats_)
+      this->fire_nibble((uint8_t) (code & 0xF));
     return true;
   }
 
@@ -122,6 +130,8 @@ class RFCapture : public Component, public remote_base::RemoteReceiverListener {
   int32_t min_pulse_{150};
   int32_t max_pulse_{1000};
   uint32_t hold_time_{250};
+  uint8_t min_repeats_{1};
+  uint16_t repeat_count_{0};
   uint32_t last_code_{0xFFFFFFFF};
   uint32_t last_code_ms_{0};
   uint32_t led_since_{0};
